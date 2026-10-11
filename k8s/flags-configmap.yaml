@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-flags
+data:
+  flags.json: |
+    {"ai_enabled": true, "return_probabilities": false}

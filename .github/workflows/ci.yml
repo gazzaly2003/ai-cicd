@@ -3,7 +3,7 @@ name: ci
 on:
   push:
     branches: [main]
-    paths-ignore: ["k8s/**", "argocd/**", "README.md"]
+    paths-ignore: ["k8s/**", "argocd/**", "loadgen/**", ".github/**", "README.md"]
   pull_request:
 
 jobs:

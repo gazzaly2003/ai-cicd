@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: ai-quality
+spec:
+  args:
+    - name: canary-hash
+  metrics:
+    - name: p95-latency
+      initialDelay: 30s
+      interval: 20s
+      failureLimit: 2
+      successCondition: "len(result) == 0 || isNaN(result[0]) || result[0] <= 0.5"
+      provider:
+        prometheus:
+          address: http://kube-prometheus-stack-prometheus.monitoring:9090
+          query: |
+            histogram_quantile(0.95, sum(rate(predict_latency_seconds_bucket{rollouts_pod_template_hash="{{args.canary-hash}}"}[1m])) by (le))
+    - name: accuracy-from-feedback
+      initialDelay: 30s
+      interval: 20s
+      failureLimit: 2
+      successCondition: "len(result) == 0 || isNaN(result[0]) || result[0] >= 0.85"
+      provider:
+        prometheus:
+          address: http://kube-prometheus-stack-prometheus.monitoring:9090
+          query: |
+            sum(rate(correct_predictions_total{rollouts_pod_template_hash="{{args.canary-hash}}"}[1m])) / sum(rate(labeled_predictions_total{rollouts_pod_template_hash="{{args.canary-hash}}"}[1m]))
