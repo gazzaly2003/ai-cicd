@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/gazzaly2003/ai-cicd:103e0b8022629ba124d83cc1df16b7c2a05287a1
+          image: ghcr.io/gazzaly2003/ai-cicd:964f104bc2def12e25c268fed94541044d4023c9
           ports:
             - name: http
               containerPort: 8000
