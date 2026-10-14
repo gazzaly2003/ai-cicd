@@ -4,4 +4,4 @@ metadata:
   name: ai-flags
 data:
   flags.json: |
-    {"ai_enabled": false, "return_probabilities": false}
+    {"ai_enabled": true, "return_probabilities": false}
