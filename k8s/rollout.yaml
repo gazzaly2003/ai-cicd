@@ -20,7 +20,7 @@ spec:
               containerPort: 8000
           env:
             - name: DELAY_MS
-              value: "0"
+              value: "800"
             - name: FLAGS_FILE
               value: /etc/flags/flags.json
           resources:
