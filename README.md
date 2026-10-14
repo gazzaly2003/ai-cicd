@@ -4,7 +4,6 @@ A complete, working example of how to ship an AI model safely. Every change goes
 
 **Stack:** GitHub Actions (CI), ArgoCD (GitOps CD), Argo Rollouts (canary and automatic rollback), Prometheus and Grafana (monitoring), FastAPI and scikit-learn (the AI service), Docker, Kubernetes (kind, runs locally for free).
 
-> Demo video: *add your link here*
 > Repository: https://github.com/gazzaly2003/ai-cicd
 
 ---
