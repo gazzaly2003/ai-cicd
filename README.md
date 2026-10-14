@@ -9,7 +9,46 @@ A complete, working example of how to ship an AI model safely. Every change goes
 
 ---
 
-## 1. What this project proves
+## 1. Why a company needs this
+
+AI fails silently. A new model can deploy with no errors and still give worse answers, respond slowly, or make wrong decisions, and nobody notices until customers complain or money is lost. Examples: a fraud model that lets more fraud through, a recommendation model that lowers sales, a support chatbot that starts giving bad answers.
+
+Many companies still release AI changes by hand: someone trains a model, checks it on a laptop and pushes it to everyone. This project makes AI releases safe and automatic.
+
+**The problem it solves**
+
+- Bad models are often released with no automatic checks
+- A faulty model can reach 100% of customers before anyone notices
+- Rolling back takes time and often depends on someone being awake
+- There is no record of who changed which model or setting
+
+**How it helps**
+
+| Safety layer | Business problem it solves |
+|---|---|
+| Automated tests and quality gate | A bad model is stopped before any customer sees it, and no one has to remember to check |
+| Canary release (20%, 60%, 100%) | If something is wrong, only a small share of users is affected, not everyone |
+| Automatic rollback | A drop in speed or accuracy is detected and reverted in minutes, even at night with nobody watching |
+| Feature flag kill switch | Support can switch the AI off instantly with a fallback, with no redeploy and no waiting for a new build |
+| GitOps (everything in Git) | Every release and rollback is recorded: who changed what and when, useful for audits and undoing mistakes |
+| Monitoring (Prometheus and Grafana) | The team sees AI speed and quality in real time |
+
+**What the company gains**
+
+- **Lower risk:** failures are small and short instead of big outages
+- **Faster releases:** teams ship AI updates often, without fear
+- **Less manual work:** no release checklists and no staring at dashboards
+- **Cheaper mistakes:** a failure caught at 20% of traffic costs far less than one at 100%
+- **Accountability:** Git keeps a full history of every model and config change
+- **No vendor lock-in:** all tools are free, standard and widely used
+
+> In one sentence: it lets a team release AI models quickly without fearing that a bad model will reach all customers, because the system tests, rolls out gradually, monitors, and rolls back by itself.
+
+*This is a working demonstration of the pattern. Production use needs the company's own model, real quality data, a real cluster and proper secret handling (see section 11).*
+
+---
+
+## 2. What this project proves
 
 | Requirement | How it is shown | Result |
 |---|---|---|
@@ -20,7 +59,7 @@ A complete, working example of how to ship an AI model safely. Every change goes
 
 ---
 
-## 2. How it works
+## 3. How it works
 
 ```
 Developer pushes code or a new model
@@ -47,7 +86,7 @@ Three safety layers: the **CI gate** blocks bad models before deploy, the **cana
 
 ---
 
-## 3. Requirements
+## 4. Requirements
 
 Windows 10 or 11 (commands are PowerShell). Mac and Linux work with small changes.
 
@@ -65,7 +104,7 @@ Machine: 8 GB RAM minimum (16 GB recommended) and about 15 GB free disk. Everyth
 
 ---
 
-## 4. Step-by-step setup
+## 5. Step-by-step setup
 
 ### Step 1: Get the code
 
@@ -216,7 +255,7 @@ Expected answer: `"prediction": 0`.
 
 ---
 
-## 5. Try the safety features
+## 6. Try the safety features
 
 Always run `git pull --rebase` before editing, because the CI bot commits after each build. Run the PowerShell lines in the terminal. The JSON goes in the browser.
 
@@ -268,7 +307,7 @@ Wait 1 to 2 minutes. `POST /predict` now returns `"prediction": null` and `"fall
 
 ---
 
-## 6. Screenshots
+## 7. Screenshots
 
 Add your images to a `docs/` folder and link them here:
 
@@ -283,7 +322,7 @@ Add your images to a `docs/` folder and link them here:
 
 ---
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 | Problem | Fix |
 |---|---|
@@ -292,7 +331,7 @@ Add your images to a `docs/` folder and link them here:
 | "Can't reach the page" | That page's port-forward stopped. Run it again in a new terminal |
 | `git push` rejected (fetch first) | `git pull --rebase`, then push again |
 | `git pull` says unstaged changes | `git status`, then commit, stash or `git restore` the file |
-| ArgoCD `OutOfSync` and `Missing` | Check `kubectl get crd | findstr rollouts`, then Refresh and Sync |
+| ArgoCD `OutOfSync` and `Missing` | Check `kubectl get crd \| findstr rollouts`, then Refresh and Sync |
 | `no matches for kind "Rollout"` | Reinstall Argo Rollouts with `--server-side` (Step 8) |
 | `ImagePullBackOff` | Make the GHCR package public (Step 5) |
 | 422 "Field required: features" in `/docs` | The request body must be `{"features": [...64 numbers...]}` |
@@ -302,7 +341,7 @@ Add your images to a `docs/` folder and link them here:
 
 ---
 
-## 8. Project structure
+## 9. Project structure
 
 ```
 ai-cicd/
@@ -320,7 +359,7 @@ ai-cicd/
 
 ---
 
-## 9. Clean up
+## 10. Clean up
 
 Pause: quit Docker Desktop (the cluster is kept). Delete everything:
 
@@ -330,12 +369,12 @@ kind delete cluster --name ai-cicd
 
 ---
 
-## 10. Limitations and next steps
+## 11. Limitations and next steps
 
 This is a local demonstration. It uses a small public dataset (scikit-learn digits), simulated user feedback, and a single-node local cluster. Production use would need a managed cluster, a model registry, real feedback data, secrets management, and a dedicated feature flag service such as flagd or Unleash. Ideas for the future: shadow deployments, drift detection, and an LLM-as-judge quality check for LLM applications.
 
 ---
 
-## 11. License
+## 12. License
 
 MIT. See the `LICENSE` file.
